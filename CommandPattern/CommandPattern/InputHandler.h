@@ -1,7 +1,7 @@
 #pragma once
 #include <iostream>
 #include <map>
-#include <vector>
+#include <stack>
 #include <SDL.h>
 #include "Character.h"
 
@@ -9,11 +9,41 @@ class Command
 {
 public:
 	virtual ~Command() {}
-	virtual void execute(Character *character) = 0;
+	virtual void execute() = 0;
 protected:
 	Command() {};
 };
 
+class MacroCommand : public Command
+{
+public:
+	MacroCommand() {};
+	~MacroCommand() {};
+	virtual void add(Command* command)
+	{
+		m_command_stack.push(command);
+	}
+	virtual void remove()
+	{
+		if (!m_command_stack.empty()) {
+			m_command_stack.pop();
+		}
+	}
+	virtual void execute()
+	{
+		if (!m_command_stack.empty()) {
+			m_command_stack.top()->execute();
+		}
+	}
+	virtual void undo()
+	{
+		if (!m_command_stack.empty()) {
+			m_command_stack.pop();
+		}
+	}
+private:
+	std::stack<Command*> m_command_stack;
+};
 
 
 class InputHandler
@@ -21,7 +51,7 @@ class InputHandler
 public:
 	InputHandler();
 	~InputHandler();
-	bool handleInput(std::vector<Command*> *command_queue);
+	bool handleInput();
 
 private:
 	SDL_Event event;
@@ -30,29 +60,29 @@ private:
 	Command *move_right;
 	Command *jump;
 	Command *crouch;
+	MacroCommand m_commandMacro;
 	std::map <int, Command*> commands;
 };
-
 
 class MoveLeft : public Command
 {
 public:
-	void execute(Character * character) { character->move_left(); }
+	void execute() { std::cout << "Move Left" << std::endl; }
 };
 class MoveRight : public Command
 {
 public:
-	void execute(Character * character) { character->move_right(); }
+	void execute() { std::cout << "Move Right" << std::endl; }
 };
 class Jump : public Command
 {
 public:
-	void execute(Character * character) { character->jump(); }
+	void execute() { std::cout << "Jump" << std::endl; }
 };
 class Crouch : public Command
 {
 public:
-	void execute(Character * character) { character->crouch(); }
+	void execute() { std::cout << "Crouch" << std::endl; }
 };
 
 

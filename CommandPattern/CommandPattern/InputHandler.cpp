@@ -24,7 +24,7 @@ InputHandler::~InputHandler()
 {
 }
 
-bool InputHandler::handleInput(std::vector<Command*>* command_queue)
+bool InputHandler::handleInput()
 {
 	
 	while (SDL_PollEvent(&event))
@@ -33,21 +33,23 @@ bool InputHandler::handleInput(std::vector<Command*>* command_queue)
 			return true;
 		if (event.type == SDL_KEYDOWN)
 		{
-			/*
-			Get current pressed key.
-			Iterate through map of commands
-			If theres a match push back command from map into command queue
-			*/
 			int keyPressed = event.key.keysym.sym;
 			std::map<int, Command*>::iterator iter;
 			for (iter = commands.begin(); iter != commands.end(); iter++)
 			{
 				if (keyPressed == iter->first)
 				{
-					command_queue->push_back(iter->second);
+					m_commandMacro.add(iter->second);
+					m_commandMacro.execute();
 				}
 			}
+			if (keyPressed == SDLK_BACKSPACE)
+			{
+				m_commandMacro.undo();
+				m_commandMacro.execute();
+			}
 		}
+
 	}
 	return false;
 }

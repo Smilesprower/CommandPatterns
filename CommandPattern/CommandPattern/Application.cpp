@@ -9,7 +9,7 @@ Application::Application()
 	, m_lastTime(LTimer::gameTime())
 {
 	m_inputHandler = new InputHandler();
-	m_character = new Character("Phil the Wizard");
+	m_character = new Character("Player1 the Wizard");
 }
 
 
@@ -80,14 +80,8 @@ void Application::update()
 
 void Application::handleEvents()
 {
-	if (m_inputHandler->handleInput(&command_queue))
+	if (m_inputHandler->handleInput())
 	{
 		m_quit = true;
-	}
-
-	while (!command_queue.empty()) 
-	{
-		command_queue.back()->execute(m_character);
-		command_queue.pop_back();
 	}
 }
