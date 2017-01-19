@@ -1,6 +1,8 @@
 #pragma once
 #include "SDL.h"
 #include "LTimer.h"
+#include "InputHandler.h"
+#include <vector>
 class Application
 {
 public:
@@ -16,7 +18,10 @@ private:
 
 	SDL_Window* m_window;
 	SDL_Renderer* m_renderer;
-	SDL_Event event;
+
+	InputHandler * m_inputHandler;
+	Character * m_character;
+	std::vector<Command*> command_queue;
 
 	void loadContent();
 	void unloadContent();

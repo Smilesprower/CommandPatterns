@@ -8,6 +8,8 @@ Application::Application()
 	: m_quit(false)
 	, m_lastTime(LTimer::gameTime())
 {
+	m_inputHandler = new InputHandler();
+	m_character = new Character("Phil the Wizard");
 }
 
 
@@ -78,11 +80,14 @@ void Application::update()
 
 void Application::handleEvents()
 {
-	while (SDL_PollEvent(&event) != 0)
+	if (m_inputHandler->handleInput(&command_queue))
 	{
-		if (event.type == SDL_QUIT)
-		{
-			m_quit = true;
-		}
+		m_quit = true;
+	}
+
+	while (!command_queue.empty()) 
+	{
+		command_queue.back()->execute(m_character);
+		command_queue.pop_back();
 	}
 }
