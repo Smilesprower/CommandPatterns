@@ -15,6 +15,7 @@ InputHandler::InputHandler()
 	commands[SDLK_RIGHT] = move_right;
 	commands[SDLK_w] = jump;
 	commands[SDLK_UP] = jump;
+	commands[SDLK_SPACE] = jump;
 	commands[SDLK_s] = crouch;
 	commands[SDLK_DOWN] = crouch;
 }
